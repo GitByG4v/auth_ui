@@ -6,30 +6,23 @@ import { PasswordInput } from './components/PasswordInput'
 import { Button } from './components/Button'
 
 function App() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [testEmail, setTestEmail] = useState('')
-  const [testPassword, setTestPassword] = useState('')
-  const [emailError, setEmailError] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSimulatedSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    if (!testEmail) {
-      setEmailError('Email address is required')
-      return
-    }
-    setEmailError('')
-    setIsSubmitting(true)
+    setIsLoading(true)
     setTimeout(() => {
-      setIsSubmitting(false)
-      alert(`UI Component test successful for: ${testEmail}`)
-    }, 1200)
+      setIsLoading(false)
+    }, 1000)
   }
 
   return (
     <AuthLayout
       icon={Lock}
       title="Welcome Back"
-      subtitle="Sign in to test our Milestone 2 UI components"
+      subtitle="Enter your credentials to access your account"
       footer={
         <p>
           Don't have an account?{' '}
@@ -39,47 +32,35 @@ function App() {
         </p>
       }
     >
-      <form onSubmit={handleSimulatedSubmit} noValidate>
+      <form onSubmit={handleSubmit} noValidate>
         <FormInput
           label="Email Address"
-          placeholder="you@example.com"
+          placeholder="name@example.com"
           type="email"
-          value={testEmail}
-          onChange={(e) => {
-            setTestEmail(e.target.value)
-            if (emailError) setEmailError('')
-          }}
-          error={emailError}
-          hint="We will never share your email with anyone."
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
 
         <PasswordInput
           label="Password"
           placeholder="Enter your password"
-          value={testPassword}
-          onChange={(e) => setTestPassword(e.target.value)}
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1.5rem' }}>
+        <div style={{ marginTop: '1.75rem' }}>
           <Button
             type="submit"
             variant="primary"
             isFullWidth
-            isLoading={isSubmitting}
+            isLoading={isLoading}
             loadingText="Signing in..."
           >
-            Sign In (Test Button)
-          </Button>
-
-          <Button
-            type="button"
-            variant="secondary"
-            isFullWidth
-            onClick={() => setEmailError(emailError ? '' : 'Demonstration error state')}
-          >
-            Toggle Error State
+            Sign In
           </Button>
         </div>
       </form>
