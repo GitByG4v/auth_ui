@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { Eye, EyeOff, Lock, UserCheck } from 'lucide-react'
+import { Lock } from 'lucide-react'
 import { AuthLayout } from './components/AuthLayout'
 import { FormInput } from './components/FormInput'
+import { PasswordInput } from './components/PasswordInput'
 import { Button } from './components/Button'
 
 function App() {
-  const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [testEmail, setTestEmail] = useState('')
+  const [testPassword, setTestPassword] = useState('')
   const [emailError, setEmailError] = useState('')
 
   const handleSimulatedSubmit = (e) => {
@@ -20,7 +21,7 @@ function App() {
     setIsSubmitting(true)
     setTimeout(() => {
       setIsSubmitting(false)
-      alert('UI Component test successful!')
+      alert(`UI Component test successful for: ${testEmail}`)
     }, 1200)
   }
 
@@ -53,28 +54,12 @@ function App() {
           required
         />
 
-        <FormInput
+        <PasswordInput
           label="Password"
           placeholder="Enter your password"
-          type={showPassword ? 'text' : 'password'}
+          value={testPassword}
+          onChange={(e) => setTestPassword(e.target.value)}
           required
-          rightElement={
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                color: 'var(--text-muted)'
-              }}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          }
         />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1.5rem' }}>
