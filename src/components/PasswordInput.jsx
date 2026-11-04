@@ -21,10 +21,11 @@ export const PasswordInput = forwardRef(function PasswordInput(
           className="password-toggle-btn"
           tabIndex={-1}
         >
-          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
         </button>
       }
       {...props}
     />
   )
 })
+
