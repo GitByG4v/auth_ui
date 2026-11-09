@@ -1,25 +1,7 @@
-/**
- * authService.js
- *
- * Mock Authentication Service.
- * Decoupled service layer simulating a real backend authentication API.
- *
- * SECURITY & ARCHITECTURAL PRINCIPLES:
- * 1. Passwords are NEVER stored in plaintext. We simulate cryptographic password hashing
- *    using Web Crypto API SHA-256 with a salt.
- * 2. In a real production architecture:
- *    - Hashing MUST happen on the server using memory-hard algorithms (Argon2id or bcrypt).
- *    - Sessions should use HttpOnly, Secure, SameSite=Strict cookies to protect against XSS.
- *    - Tokens/sessions must be revocable server-side and rate-limited.
- * 3. UI components NEVER interact with browser storage directly. Only authService encapsulates storage.
- */
-
 const STORAGE_USERS_KEY = 'auth_demo_users_v1'
 const STORAGE_SESSION_KEY = 'auth_demo_session_v1'
 
-/**
- * Helper: Computes a salted SHA-256 hash using native Web Crypto API.
- */
+
 async function hashPassword(password, salt = 'auth_ui_salt_2026') {
   const encoder = new TextEncoder()
   const data = encoder.encode(salt + password)
@@ -28,9 +10,7 @@ async function hashPassword(password, salt = 'auth_ui_salt_2026') {
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
 }
 
-/**
- * Helper: Retrieve all registered users from mock DB (localStorage).
- */
+
 function getStoredUsers() {
   try {
     const raw = localStorage.getItem(STORAGE_USERS_KEY)
@@ -40,20 +20,11 @@ function getStoredUsers() {
   }
 }
 
-/**
- * Helper: Persist users array into mock DB.
- */
+
 function saveStoredUsers(users) {
   localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users))
 }
 
-/**
- * Seed an initial demo account if storage is currently empty.
- * This lets interviewers/testers test login immediately without having to register first.
- * Demo credentials:
- *   Email: alex.morgan@example.com
- *   Password: Password123!
- */
 export async function seedDemoUserIfNeeded() {
   const users = getStoredUsers()
   const demoEmail = 'alex.morgan@example.com'
@@ -73,7 +44,7 @@ export async function seedDemoUserIfNeeded() {
 }
 
 // Automatically seed on module load
-seedDemoUserIfNeeded().catch(() => {})
+seedDemoUserIfNeeded().catch(() => { })
 
 export const authService = {
   /**

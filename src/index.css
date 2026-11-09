@@ -11,6 +11,8 @@
 }
 
 :root {
+  color-scheme: light;
+
   /* Primary Terracotta Palette */
   --accent: #D97757;
   --accent-hover: #C76545;
@@ -64,6 +66,8 @@
 }
 
 [data-theme="dark"] {
+  color-scheme: dark;
+
   /* Warm Obsidian / Cyber Terracotta Theme Tokens (Zero Blue Tones) */
   --bg-page: #131110;
   --bg-secondary: #1C1816;
@@ -377,6 +381,64 @@ html, body {
   box-shadow: 0 0 0 3.5px rgba(220, 38, 38, 0.18);
 }
 
+.form-input::placeholder {
+  color: var(--text-subtle);
+  opacity: 0.85;
+}
+
+.form-input:not(:placeholder-shown),
+.form-input:valid {
+  background-color: var(--bg-input);
+  color: var(--text-main);
+}
+
+.form-input:not(:placeholder-shown):focus,
+.form-input:valid:focus {
+  background-color: var(--bg-input-focus);
+}
+
+/* ==========================================================================
+   Browser Autofill Overrides (Chrome, Edge, Firefox, Safari)
+   Prevents browser from painting inputs white in Dark Mode on Windows / Chromium
+   ========================================================================== */
+
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus,
+.form-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-input) inset !important;
+  -webkit-text-fill-color: var(--text-main) !important;
+  caret-color: var(--text-main) !important;
+  transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
+  border-color: var(--border-color) !important;
+  font-family: inherit !important;
+  font-size: 0.9375rem !important;
+}
+
+.form-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-input-focus) inset, 0 0 0 3.5px var(--focus-ring) !important;
+  -webkit-text-fill-color: var(--text-main) !important;
+  border-color: var(--border-focus) !important;
+}
+
+.form-input:autofill,
+.form-input:autofill:hover,
+.form-input:autofill:focus,
+.form-input:autofill:active {
+  box-shadow: 0 0 0 1000px var(--bg-input) inset !important;
+  -webkit-text-fill-color: var(--text-main) !important;
+  color: var(--text-main) !important;
+  caret-color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+  font-family: inherit !important;
+  font-size: 0.9375rem !important;
+}
+
+.form-input:autofill:focus {
+  box-shadow: 0 0 0 1000px var(--bg-input-focus) inset, 0 0 0 3.5px var(--focus-ring) !important;
+  border-color: var(--border-focus) !important;
+}
+
 .form-input-right {
   position: absolute;
   right: 0.85rem;
@@ -687,13 +749,14 @@ input[type="password"]::-ms-clear {
    ========================================================================== */
 
 .generator-card {
-  background-color: rgba(255, 248, 244, 0.85);
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 1rem;
+  padding: 1rem 1.15rem;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
   text-align: left;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .generator-header {
@@ -701,6 +764,7 @@ input[type="password"]::-ms-clear {
   justify-content: space-between;
   align-items: center;
   font-size: 0.875rem;
+  color: var(--text-main);
   margin-bottom: 0.75rem;
 }
 
@@ -713,10 +777,12 @@ input[type="password"]::-ms-clear {
   cursor: pointer;
   padding: 2px 6px;
   border-radius: var(--radius-sm);
+  transition: color 0.15s ease, background-color 0.15s ease;
 }
 
 .generator-close-btn:hover {
   color: var(--accent);
+  background-color: var(--bg-soft-orange);
 }
 
 .generator-display-row {
@@ -739,7 +805,8 @@ input[type="password"]::-ms-clear {
   text-overflow: ellipsis;
   white-space: nowrap;
   user-select: all;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-icon {
@@ -752,14 +819,14 @@ input[type="password"]::-ms-clear {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--text-muted);
+  color: var(--text-main);
   transition: all 0.15s ease;
 }
 
 .btn-icon:hover {
   background-color: var(--bg-soft-orange);
   color: var(--accent);
-  border-color: var(--accent-light);
+  border-color: var(--accent);
 }
 
 .generator-copied-notice {
@@ -784,6 +851,11 @@ input[type="password"]::-ms-clear {
   color: var(--text-main);
 }
 
+.generator-radio-label input[type="radio"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
 .generator-controls {
   display: flex;
   flex-direction: column;
@@ -794,6 +866,7 @@ input[type="password"]::-ms-clear {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  color: var(--text-main);
 }
 
 .generator-slider {
