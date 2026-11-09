@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { KeyRound, ArrowLeft, CheckCircle2, ShieldAlert } from 'lucide-react'
@@ -8,7 +9,7 @@ import { Button } from '../components/Button'
 import { forgotPasswordSchema } from '../utils/validation'
 import { useAuth } from '../context/AuthContext'
 
-export function ForgotPassword({ onNavigate }) {
+export function ForgotPassword() {
   const { requestPasswordReset } = useAuth()
   const [result, setResult] = useState(null)
 
@@ -42,23 +43,18 @@ export function ForgotPassword({ onNavigate }) {
       title="Reset Password"
       subtitle="Enter your email to receive recovery instructions"
       footer={
-        <button
-          type="button"
+        <Link
+          to="/login"
           className="auth-link"
           style={{
-            background: 'none',
-            border: 'none',
-            font: 'inherit',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.35rem',
-            cursor: 'pointer',
           }}
-          onClick={() => onNavigate && onNavigate('login')}
         >
           <ArrowLeft size={16} />
           <span>Back to sign in</span>
-        </button>
+        </Link>
       }
     >
       {result ? (
@@ -99,14 +95,11 @@ export function ForgotPassword({ onNavigate }) {
           </div>
 
           <div style={{ marginTop: '1.5rem' }}>
-            <Button
-              type="button"
-              variant="secondary"
-              isFullWidth
-              onClick={() => onNavigate && onNavigate('login')}
-            >
-              Return to Sign In
-            </Button>
+            <Link to="/login" style={{ textDecoration: 'none' }}>
+              <Button type="button" variant="secondary" isFullWidth>
+                Return to Sign In
+              </Button>
+            </Link>
           </div>
         </div>
       ) : (
@@ -137,4 +130,3 @@ export function ForgotPassword({ onNavigate }) {
     </AuthLayout>
   )
 }
-

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { UserPlus, AlertCircle } from 'lucide-react'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormInput } from '../components/FormInput'
 import { PasswordInput } from '../components/PasswordInput'
@@ -9,10 +10,16 @@ import { Button } from '../components/Button'
 import { registerSchema } from '../utils/validation'
 import { useAuth } from '../context/AuthContext'
 
-export function Register({ onNavigate, onSuccess }) {
-  const { register: registerUser, error: contextError, clearError } = useAuth()
+export function Register() {
+  const { register: registerUser, isAuthenticated, error: contextError, clearError } = useAuth()
   const [localError, setLocalError] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, navigate])
 
   const {
     register,
@@ -31,7 +38,6 @@ export function Register({ onNavigate, onSuccess }) {
 
   const onSubmit = async (data) => {
     setLocalError(null)
-    setSuccessMessage(null)
     clearError()
     try {
       await registerUser({
@@ -39,11 +45,12 @@ export function Register({ onNavigate, onSuccess }) {
         email: data.email,
         password: data.password,
       })
-      setSuccessMessage('Account registered successfully! You can now sign in.')
-      setTimeout(() => {
-        if (onSuccess) onSuccess()
-        else if (onNavigate) onNavigate('login')
-      }, 1200)
+      navigate('/login', {
+        state: {
+          registeredEmail: data.email,
+          message: 'Account created successfully! Please sign in with your password.',
+        },
+      })
     } catch (err) {
       setLocalError(err.message || 'Registration failed. Please check your information.')
     }
@@ -59,14 +66,9 @@ export function Register({ onNavigate, onSuccess }) {
       footer={
         <p>
           Already have an account?{' '}
-          <button
-            type="button"
-            className="auth-link"
-            style={{ background: 'none', border: 'none', font: 'inherit', padding: 0 }}
-            onClick={() => onNavigate && onNavigate('login')}
-          >
+          <Link to="/login" className="auth-link">
             Sign in
-          </button>
+          </Link>
         </p>
       }
     >
@@ -74,13 +76,6 @@ export function Register({ onNavigate, onSuccess }) {
         <div className="alert-banner alert-danger" role="alert">
           <AlertCircle size={18} aria-hidden="true" style={{ flexShrink: 0 }} />
           <span>{errorMessage}</span>
-        </div>
-      )}
-
-      {successMessage && (
-        <div className="alert-banner alert-success" role="status">
-          <CheckCircle2 size={18} aria-hidden="true" style={{ flexShrink: 0 }} />
-          <span>{successMessage}</span>
         </div>
       )}
 

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Lock, AlertCircle } from 'lucide-react'
+import { Lock, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormInput } from '../components/FormInput'
 import { PasswordInput } from '../components/PasswordInput'
@@ -9,9 +10,22 @@ import { Button } from '../components/Button'
 import { loginSchema } from '../utils/validation'
 import { useAuth } from '../context/AuthContext'
 
-export function Login({ onNavigate, onSuccess }) {
-  const { login, error: contextError, clearError } = useAuth()
+export function Login() {
+  const { login, isAuthenticated, error: contextError, clearError } = useAuth()
   const [localError, setLocalError] = useState(null)
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  // Where to navigate after login: return to the attempted URL, or fallback to /dashboard
+  const from = location.state?.from?.pathname || '/dashboard'
+  const flashMessage = location.state?.message
+
+  // If already logged in, redirect away from login page
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, navigate])
 
   const {
     register,
@@ -20,7 +34,7 @@ export function Login({ onNavigate, onSuccess }) {
   } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      email: location.state?.registeredEmail || '',
       password: '',
       rememberMe: false,
     },
@@ -32,7 +46,7 @@ export function Login({ onNavigate, onSuccess }) {
     clearError()
     try {
       await login(data)
-      if (onSuccess) onSuccess()
+      navigate(from, { replace: true })
     } catch (err) {
       setLocalError(err.message || 'Failed to sign in. Please verify your credentials.')
     }
@@ -48,17 +62,19 @@ export function Login({ onNavigate, onSuccess }) {
       footer={
         <p>
           Don't have an account?{' '}
-          <button
-            type="button"
-            className="auth-link"
-            style={{ background: 'none', border: 'none', font: 'inherit', padding: 0 }}
-            onClick={() => onNavigate && onNavigate('register')}
-          >
+          <Link to="/register" className="auth-link">
             Create account
-          </button>
+          </Link>
         </p>
       }
     >
+      {flashMessage && (
+        <div className="alert-banner alert-success" role="status">
+          <CheckCircle2 size={18} aria-hidden="true" style={{ flexShrink: 0 }} />
+          <span>{flashMessage}</span>
+        </div>
+      )}
+
       {errorMessage && (
         <div className="alert-banner alert-danger" role="alert">
           <AlertCircle size={18} aria-hidden="true" style={{ flexShrink: 0 }} />
@@ -96,14 +112,13 @@ export function Login({ onNavigate, onSuccess }) {
             <span>Remember me</span>
           </label>
 
-          <button
-            type="button"
+          <Link
+            to="/forgot-password"
             className="auth-link"
-            style={{ background: 'none', border: 'none', font: 'inherit', fontSize: '0.875rem' }}
-            onClick={() => onNavigate && onNavigate('forgot')}
+            style={{ fontSize: '0.875rem' }}
           >
             Forgot password?
-          </button>
+          </Link>
         </div>
 
         <Button
