@@ -1,10 +1,3 @@
-/**
- * passwordGenerator.js
- *
- * Cryptographically Secure Password Generator using native Web Crypto API.
- * NEVER uses Math.random().
- */
-
 const CHAR_SETS = {
   uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
   lowercase: 'abcdefghijklmnopqrstuvwxyz',
@@ -12,7 +5,6 @@ const CHAR_SETS = {
   symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?',
 }
 
-// Curated list of friendly, easy-to-type English words for passphrase generation
 const PASSPHRASE_WORDS = [
   'amber', 'beacon', 'breeze', 'bridge', 'cactus', 'canvas', 'canyon', 'cedar',
   'cliff', 'clover', 'comet', 'coral', 'crater', 'crystal', 'delta', 'drift',
@@ -25,17 +17,13 @@ const PASSPHRASE_WORDS = [
   'tundra', 'valley', 'vector', 'vortex', 'voyage', 'whisper', 'zenith', 'zephyr',
 ]
 
-/**
- * Returns a cryptographically secure random integer in the range [0, max - 1].
- * Uses rejection sampling to eliminate modulo bias.
- */
-export function getSecureRandomInt(max) {
+export function getSecureRandomInt(max: number): number {
   if (max <= 0) return 0
   const randomBuffer = new Uint32Array(1)
   const maxUint = 0xffffffff
   const limit = maxUint - (maxUint % max)
 
-  let randomVal
+  let randomVal: number
   do {
     crypto.getRandomValues(randomBuffer)
     randomVal = randomBuffer[0]
@@ -44,10 +32,7 @@ export function getSecureRandomInt(max) {
   return randomVal % max
 }
 
-/**
- * Shuffles an array in-place using Fisher-Yates algorithm with CSPRNG.
- */
-export function secureShuffle(array) {
+export function secureShuffle<T>(array: T[]): T[] {
   const result = [...array]
   for (let i = result.length - 1; i > 0; i--) {
     const j = getSecureRandomInt(i + 1)
@@ -58,55 +43,50 @@ export function secureShuffle(array) {
   return result
 }
 
-/**
- * Generates a random character-based password.
- * Guarantees at least 1 character per selected category, then securely shuffles.
- */
+export interface PasswordGeneratorOptions {
+  length?: number
+  uppercase?: boolean
+  lowercase?: boolean
+  numbers?: boolean
+  symbols?: boolean
+}
+
 export function generatePassword({
   length = 16,
   uppercase = true,
   lowercase = true,
   numbers = true,
   symbols = true,
-} = {}) {
-  const activeSets = []
+}: PasswordGeneratorOptions = {}): string {
+  const activeSets: string[] = []
   if (uppercase) activeSets.push(CHAR_SETS.uppercase)
   if (lowercase) activeSets.push(CHAR_SETS.lowercase)
   if (numbers) activeSets.push(CHAR_SETS.numbers)
   if (symbols) activeSets.push(CHAR_SETS.symbols)
 
-  // Fallback if user unchecks all categories
   if (activeSets.length === 0) {
     activeSets.push(CHAR_SETS.lowercase, CHAR_SETS.numbers)
   }
 
-  const chosenChars = []
+  const chosenChars: string[] = []
 
-  // Step 1: Guarantee at least ONE character from each active category
   for (const set of activeSets) {
     const charIndex = getSecureRandomInt(set.length)
     chosenChars.push(set[charIndex])
   }
 
-  // Combined character pool for remainder
   const fullPool = activeSets.join('')
 
-  // Step 2: Fill the remaining length with random choices from the combined pool
   while (chosenChars.length < length) {
     const charIndex = getSecureRandomInt(fullPool.length)
     chosenChars.push(fullPool[charIndex])
   }
 
-  // Step 3: Securely shuffle so category-guaranteed positions are completely randomized
   return secureShuffle(chosenChars).join('')
 }
 
-/**
- * Generates a 4-word memorable passphrase with secure random words.
- * Example output: "canyon-crystal-silver-beacon"
- */
-export function generatePassphrase(wordCount = 4, separator = '-') {
-  const words = []
+export function generatePassphrase(wordCount: number = 4, separator: string = '-'): string {
+  const words: string[] = []
   for (let i = 0; i < wordCount; i++) {
     const index = getSecureRandomInt(PASSPHRASE_WORDS.length)
     words.push(PASSPHRASE_WORDS[index])

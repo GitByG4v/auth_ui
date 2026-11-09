@@ -1,7 +1,6 @@
-/* ==========================================================================
-   Design Tokens & Modern Reset (Terracotta Glassmorphism Theme)
-   ========================================================================== */
+@import "tailwindcss";
 
+/* Design Tokens & Reset */
 *,
 *::before,
 *::after {
@@ -13,7 +12,7 @@
 :root {
   color-scheme: light;
 
-  /* Primary Terracotta Palette */
+  /* Terracotta Brand */
   --accent: #D97757;
   --accent-hover: #C76545;
   --accent-dark: #A94F35;
@@ -21,7 +20,7 @@
   --accent-subtle: #FFF1E9;
   --focus-ring: rgba(217, 119, 87, 0.22);
 
-  /* Backgrounds */
+  /* Surfaces & Inputs */
   --bg-page: #FFFEFC;
   --bg-secondary: #FFF8F4;
   --bg-soft-orange: #FFF1E9;
@@ -39,7 +38,7 @@
   --text-muted: #64748B;
   --text-subtle: #94A3B8;
 
-  /* Feedback Colors (Warm / Terracotta Harmonized) */
+  /* Feedback Colors */
   --danger: #DC2626;
   --danger-bg: #FEF2F2;
   --danger-border: #FECACA;
@@ -48,14 +47,13 @@
   --warning: #D97706;
   --warning-bg: #FFFBEB;
 
-  /* Component Radii */
+  /* Radii & Shadows */
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-card: 30px;
   --radius-full: 9999px;
 
-  /* Shadows */
   --shadow-sm: 0 1px 3px rgba(217, 119, 87, 0.08);
   --shadow-card: 0 25px 70px rgba(217, 119, 87, 0.16), 0 4px 20px rgba(0, 0, 0, 0.03);
   --shadow-btn: 0 10px 24px rgba(217, 119, 87, 0.32);
@@ -68,7 +66,7 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
-  /* Warm Obsidian / Cyber Terracotta Theme Tokens (Zero Blue Tones) */
+  /* Warm Obsidian Dark Tokens */
   --bg-page: #131110;
   --bg-secondary: #1C1816;
   --bg-soft-orange: rgba(224, 122, 95, 0.14);
@@ -114,10 +112,7 @@ html, body {
   overflow-x: hidden;
 }
 
-/* ==========================================================================
-   Matrix Canvas Background
-   ========================================================================== */
-
+/* Matrix Canvas */
 .matrix-canvas {
   position: fixed;
   top: 0;
@@ -129,7 +124,6 @@ html, body {
   opacity: 1;
 }
 
-/* Ambient Radial Glow over the Matrix Canvas */
 .matrix-glow-overlay {
   position: fixed;
   top: 0;
@@ -155,10 +149,7 @@ html, body {
   );
 }
 
-/* ==========================================================================
-   Frosted Glass Auth Layout
-   ========================================================================== */
-
+/* Frosted Glass Auth Card */
 .auth-wrapper {
   position: relative;
   z-index: 2;
@@ -183,7 +174,6 @@ html, body {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* Subtle top-right light refraction on the glass card */
 .auth-card::before {
   content: '';
   position: absolute;
@@ -214,7 +204,6 @@ html, body {
   margin-bottom: 1.15rem;
 }
 
-/* Circular Terracotta Icon Badge */
 .auth-icon-badge {
   display: inline-flex;
   align-items: center;
@@ -254,7 +243,6 @@ html, body {
   line-height: 1.45;
 }
 
-/* Glowing Terracotta Tapered Divider Line */
 .auth-header-divider {
   width: 80px;
   height: 2px;
@@ -295,10 +283,7 @@ html, body {
   text-decoration: underline;
 }
 
-/* ==========================================================================
-   Form Input Styles
-   ========================================================================== */
-
+/* Form Inputs */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -397,11 +382,7 @@ html, body {
   background-color: var(--bg-input-focus);
 }
 
-/* ==========================================================================
-   Browser Autofill Overrides (Chrome, Edge, Firefox, Safari)
-   Prevents browser from painting inputs white in Dark Mode on Windows / Chromium
-   ========================================================================== */
-
+/* Autofill Overrides */
 .form-input:-webkit-autofill,
 .form-input:-webkit-autofill:hover,
 .form-input:-webkit-autofill:focus,
@@ -470,7 +451,6 @@ html, body {
   outline: 2px solid var(--accent);
 }
 
-/* Hide native Edge / Safari password reveal */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
   display: none;
@@ -490,11 +470,12 @@ input[type="password"]::-ms-clear {
   margin-top: 0.4rem;
 }
 
-/* Form Row between: Checkbox + Forgot password */
 .form-row-between {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin: 0.15rem 0 1.15rem;
   font-size: 0.875rem;
 }
@@ -517,10 +498,7 @@ input[type="password"]::-ms-clear {
   border-radius: 4px;
 }
 
-/* ==========================================================================
-   Button Styles
-   ========================================================================== */
-
+/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -549,7 +527,6 @@ input[type="password"]::-ms-clear {
   width: 100%;
 }
 
-/* Primary Terracotta Gradient Button */
 .btn-primary {
   background: linear-gradient(135deg, #E2795B 0%, #D97757 50%, #C76545 100%);
   color: #FFFFFF;
@@ -597,7 +574,6 @@ input[type="password"]::-ms-clear {
   color: var(--accent);
 }
 
-/* Spinner Animation */
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -611,10 +587,7 @@ input[type="password"]::-ms-clear {
   animation: spin 0.8s linear infinite;
 }
 
-/* ==========================================================================
-   Alert Banners
-   ========================================================================== */
-
+/* Alert Banners */
 .alert-banner {
   padding: 0.85rem 1rem;
   border-radius: var(--radius-md);
@@ -638,10 +611,7 @@ input[type="password"]::-ms-clear {
   color: var(--success);
 }
 
-/* ==========================================================================
-   Password Strength Meter Styles (Terracotta Harmonized)
-   ========================================================================== */
-
+/* Password Strength Meter */
 .strength-meter-container {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -744,10 +714,7 @@ input[type="password"]::-ms-clear {
   gap: 0.35rem;
 }
 
-/* ==========================================================================
-   Password Generator Styles (Terracotta Harmonized)
-   ========================================================================== */
-
+/* Password Generator */
 .generator-card {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -881,10 +848,7 @@ input[type="password"]::-ms-clear {
   gap: 0.4rem 0.65rem;
 }
 
-/* ==========================================================================
-   Dashboard & Navbar Styles (Warm SaaS Architecture)
-   ========================================================================== */
-
+/* Dashboard & Navbar */
 .dashboard-page {
   position: relative;
   min-height: 100vh;
@@ -1129,10 +1093,7 @@ input[type="password"]::-ms-clear {
   color: var(--text-muted);
 }
 
-/* ==========================================================================
-   Theme Toggle Styles
-   ========================================================================== */
-
+/* Theme Toggle */
 .theme-toggle-btn {
   display: inline-flex;
   align-items: center;
@@ -1163,17 +1124,158 @@ input[type="password"]::-ms-clear {
   z-index: 100;
 }
 
-@media (max-width: 600px) {
-  .theme-toggle-floating {
-    top: 1rem;
-    right: 1rem;
-  }
-}
-
 .theme-toggle-icon {
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .theme-toggle-btn:hover .theme-toggle-icon {
   transform: rotate(25deg);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints & Adaptations
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 1.25rem;
+  }
+
+  .dashboard-container {
+    padding: 1.75rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .dashboard-hero {
+    padding: 1.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-wrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .auth-card {
+    padding: 1.75rem 1.25rem 1.5rem;
+    border-radius: 22px;
+  }
+
+  .auth-title {
+    font-size: 1.5rem;
+  }
+
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+
+  .navbar-user {
+    gap: 0.65rem;
+  }
+
+  .navbar-user-email {
+    display: none;
+  }
+
+  .navbar-user-name {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.8125rem;
+  }
+
+  .navbar .btn {
+    height: 36px;
+    padding: 0 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .dashboard-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.35rem 1.25rem;
+  }
+
+  .dashboard-hero-title {
+    font-size: 1.4rem;
+  }
+
+  .dashboard-hero-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .dashboard-card {
+    padding: 1.35rem 1.15rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-wrapper {
+    padding: 1rem 0.65rem;
+  }
+
+  .auth-card {
+    padding: 1.5rem 1rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  .auth-icon-badge {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0.75rem;
+  }
+
+  .auth-title {
+    font-size: 1.35rem;
+  }
+
+  .auth-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .navbar-user-info {
+    display: none;
+  }
+
+  .navbar-brand span {
+    font-size: 0.95rem;
+  }
+
+  .navbar-logo-badge {
+    width: 30px;
+    height: 30px;
+  }
+
+  .profile-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .profile-item-value {
+    width: 100%;
+    word-break: break-all;
+  }
+
+  .generator-checkbox-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .generator-mode-row {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .strength-requirements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-toggle-floating {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
 }

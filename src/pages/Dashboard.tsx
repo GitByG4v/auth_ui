@@ -9,7 +9,7 @@ import { ShieldCheck, LogOut, User, CheckCircle2, Mail, Hash, KeyRound } from 'l
 export function Dashboard() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false)
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -23,11 +23,9 @@ export function Dashboard() {
 
   return (
     <div className="dashboard-page">
-      {/* Full Viewport Interactive Binary Matrix Background */}
       <MatrixBackground />
       <div className="matrix-glow-overlay" />
 
-      {/* Top Navigation Bar */}
       <header className="navbar">
         <div className="navbar-brand">
           <div className="navbar-logo-badge">
@@ -56,9 +54,7 @@ export function Dashboard() {
         </div>
       </header>
 
-      {/* Main Dashboard Body */}
       <main className="dashboard-container">
-        {/* Hero Welcome Card */}
         <section className="dashboard-hero">
           <div>
             <h1 className="dashboard-hero-title">Welcome back, {user?.name}! 👋</h1>
@@ -73,7 +69,6 @@ export function Dashboard() {
           </div>
         </section>
 
-        {/* Profile Information Card */}
         <section className="dashboard-card">
           <div className="dashboard-card-header">
             <div className="dashboard-card-icon-wrap">
@@ -116,3 +111,4 @@ export function Dashboard() {
     </div>
   )
 }
+

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserPlus, User, Mail, Lock, Sparkles, ArrowRight, AlertCircle } from 'lucide-react'
 import { AuthLayout } from '../components/AuthLayout'
@@ -9,13 +9,13 @@ import { PasswordInput } from '../components/PasswordInput'
 import { PasswordStrengthMeter } from '../components/PasswordStrengthMeter'
 import { PasswordGenerator } from '../components/PasswordGenerator'
 import { Button } from '../components/Button'
-import { registerSchema } from '../utils/validation'
+import { registerSchema, RegisterFormData } from '../utils/validation'
 import { useAuth } from '../context/AuthContext'
 
 export function Register() {
   const { register: registerUser, isAuthenticated, error: contextError, clearError } = useAuth()
-  const [localError, setLocalError] = useState(null)
-  const [showGenerator, setShowGenerator] = useState(false)
+  const [localError, setLocalError] = useState<string | null>(null)
+  const [showGenerator, setShowGenerator] = useState<boolean>(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export function Register() {
     watch,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: '',
@@ -43,7 +43,7 @@ export function Register() {
 
   const watchedPassword = watch('password') || ''
 
-  const handleApplyGeneratedPassword = (generated) => {
+  const handleApplyGeneratedPassword = (generated: string) => {
     setValue('password', generated, {
       shouldValidate: true,
       shouldDirty: true,
@@ -57,7 +57,7 @@ export function Register() {
     setShowGenerator(false)
   }
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
     setLocalError(null)
     clearError()
     try {
@@ -73,7 +73,8 @@ export function Register() {
         },
       })
     } catch (err) {
-      setLocalError(err.message || 'Registration failed. Please check your information.')
+      const message = err instanceof Error ? err.message : 'Registration failed. Please check your information.'
+      setLocalError(message)
     }
   }
 
@@ -136,10 +137,8 @@ export function Register() {
           {...register('password')}
         />
 
-        {/* Live Password Strength Meter */}
         <PasswordStrengthMeter password={watchedPassword} />
 
-        {/* Toggle Password Generator */}
         <div style={{ margin: '0.35rem 0 1rem 0', textAlign: 'left' }}>
           <button
             type="button"
@@ -164,7 +163,6 @@ export function Register() {
           </button>
         </div>
 
-        {/* Embedded Secure Generator Panel */}
         {showGenerator && (
           <PasswordGenerator
             onSelectPassword={handleApplyGeneratedPassword}
@@ -199,3 +197,4 @@ export function Register() {
     </AuthLayout>
   )
 }
+

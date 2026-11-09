@@ -1,23 +1,23 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { KeyRound, Mail, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormInput } from '../components/FormInput'
 import { Button } from '../components/Button'
-import { forgotPasswordSchema } from '../utils/validation'
+import { forgotPasswordSchema, ForgotPasswordFormData } from '../utils/validation'
 import { useAuth } from '../context/AuthContext'
 
 export function ForgotPassword() {
   const { requestPasswordReset } = useAuth()
-  const [result, setResult] = useState(null)
+  const [result, setResult] = useState<{ success: boolean; message: string } | null>(null)
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: '',
@@ -25,7 +25,7 @@ export function ForgotPassword() {
     mode: 'onTouched',
   })
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<ForgotPasswordFormData> = async (data) => {
     try {
       const response = await requestPasswordReset(data.email)
       setResult(response)
@@ -103,3 +103,4 @@ export function ForgotPassword() {
     </AuthLayout>
   )
 }
+

@@ -1,8 +1,10 @@
 import { useState, forwardRef } from 'react'
 import { Eye, EyeOff, Lock } from 'lucide-react'
-import { FormInput } from './FormInput'
+import { FormInput, FormInputProps } from './FormInput'
 
-export const PasswordInput = forwardRef(function PasswordInput(
+export interface PasswordInputProps extends Omit<FormInputProps, 'type' | 'rightElement'> {}
+
+export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(function PasswordInput(
   {
     label = 'Password',
     labelIcon = Lock,
@@ -35,3 +37,4 @@ export const PasswordInput = forwardRef(function PasswordInput(
     />
   )
 })
+

@@ -3,19 +3,24 @@ import { generatePassword, generatePassphrase } from '../utils/passwordGenerator
 import { RefreshCw, Copy, Check, KeyRound, Sparkles } from 'lucide-react'
 import { Button } from './Button'
 
-export function PasswordGenerator({ onSelectPassword, onClose }) {
-  const [mode, setMode] = useState('chars') // 'chars' | 'passphrase'
-  const [length, setLength] = useState(16)
+export interface PasswordGeneratorProps {
+  onSelectPassword?: (password: string) => void
+  onClose?: () => void
+}
+
+export function PasswordGenerator({ onSelectPassword, onClose }: PasswordGeneratorProps) {
+  const [mode, setMode] = useState<'chars' | 'passphrase'>('chars')
+  const [length, setLength] = useState<number>(16)
   const [options, setOptions] = useState({
     uppercase: true,
     lowercase: true,
     numbers: true,
     symbols: true,
   })
-  const [generatedPassword, setGeneratedPassword] = useState(() =>
+  const [generatedPassword, setGeneratedPassword] = useState<string>(() =>
     generatePassword({ length: 16, uppercase: true, lowercase: true, numbers: true, symbols: true })
   )
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState<boolean>(false)
 
   const regenerate = (customMode = mode, customLength = length, customOptions = options) => {
     if (customMode === 'passphrase') {
@@ -26,17 +31,17 @@ export function PasswordGenerator({ onSelectPassword, onClose }) {
     setCopied(false)
   }
 
-  const handleModeChange = (newMode) => {
+  const handleModeChange = (newMode: 'chars' | 'passphrase') => {
     setMode(newMode)
     regenerate(newMode, length, options)
   }
 
-  const handleLengthChange = (newLength) => {
+  const handleLengthChange = (newLength: number) => {
     setLength(newLength)
     regenerate(mode, newLength, options)
   }
 
-  const handleCheckboxChange = (key) => {
+  const handleCheckboxChange = (key: keyof typeof options) => {
     const activeCount = Object.values(options).filter(Boolean).length
     if (options[key] && activeCount === 1) return
 
@@ -90,7 +95,6 @@ export function PasswordGenerator({ onSelectPassword, onClose }) {
         )}
       </div>
 
-      {/* Generated Output Display */}
       <div className="generator-display-row">
         <div className="generator-output" title={generatedPassword}>
           {generatedPassword}
@@ -123,7 +127,6 @@ export function PasswordGenerator({ onSelectPassword, onClose }) {
         </p>
       )}
 
-      {/* Mode Selector */}
       <div className="generator-mode-row">
         <label className="generator-radio-label">
           <input
@@ -145,7 +148,6 @@ export function PasswordGenerator({ onSelectPassword, onClose }) {
         </label>
       </div>
 
-      {/* Character Mode Controls */}
       {mode === 'chars' && (
         <div className="generator-controls">
           <div className="generator-slider-row">
@@ -204,7 +206,6 @@ export function PasswordGenerator({ onSelectPassword, onClose }) {
         </div>
       )}
 
-      {/* Action: Fill into Form */}
       <div style={{ marginTop: '0.85rem' }}>
         <Button
           type="button"
@@ -219,3 +220,4 @@ export function PasswordGenerator({ onSelectPassword, onClose }) {
     </div>
   )
 }
+

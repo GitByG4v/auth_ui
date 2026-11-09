@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Lock, Mail, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormInput } from '../components/FormInput'
 import { PasswordInput } from '../components/PasswordInput'
 import { Button } from '../components/Button'
-import { loginSchema } from '../utils/validation'
+import { loginSchema, LoginFormData } from '../utils/validation'
 import { useAuth } from '../context/AuthContext'
 
 export function Login() {
   const { login, isAuthenticated, error: contextError, clearError } = useAuth()
-  const [localError, setLocalError] = useState(null)
+  const [localError, setLocalError] = useState<string | null>(null)
   const navigate = useNavigate()
   const location = useLocation()
 
-  const from = location.state?.from?.pathname || '/dashboard'
-  const flashMessage = location.state?.message
+  const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/dashboard'
+  const flashMessage = (location.state as { message?: string })?.message
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -29,24 +29,25 @@ export function Login() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: location.state?.registeredEmail || '',
+      email: (location.state as { registeredEmail?: string })?.registeredEmail || '',
       password: '',
       rememberMe: false,
     },
     mode: 'onTouched',
   })
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     setLocalError(null)
     clearError()
     try {
       await login(data)
       navigate(from, { replace: true })
     } catch (err) {
-      setLocalError(err.message || 'Invalid email or password.')
+      const message = err instanceof Error ? err.message : 'Invalid email or password.'
+      setLocalError(message)
     }
   }
 
@@ -137,3 +138,4 @@ export function Login() {
     </AuthLayout>
   )
 }
+

@@ -1,11 +1,5 @@
-/**
- * passwordStrength.js
- *
- * Standalone password strength analyzer logic.
- * Decoupled from React UI for 100% testability.
- */
+import type { Requirement, PasswordAnalysis } from '../types/auth'
 
-// Common weak passwords and predictable keyboard sequences
 const COMMON_PATTERNS = [
   'password',
   '123456',
@@ -20,10 +14,7 @@ const COMMON_PATTERNS = [
   'login',
 ]
 
-/**
- * Checks individual security requirements.
- */
-export function checkRequirements(password = '') {
+export function checkRequirements(password: string = ''): Requirement[] {
   return [
     {
       id: 'length',
@@ -53,14 +44,10 @@ export function checkRequirements(password = '') {
   ]
 }
 
-/**
- * Detects common patterns, sequential characters, and excessive repeats.
- */
-export function detectPatterns(password = '') {
+export function detectPatterns(password: string = ''): string[] {
   const lower = password.toLowerCase()
-  const issues = []
+  const issues: string[] = []
 
-  // Check known blacklist substrings
   for (const pattern of COMMON_PATTERNS) {
     if (lower.includes(pattern)) {
       issues.push(`Contains predictable word or pattern ("${pattern}")`)
@@ -68,12 +55,10 @@ export function detectPatterns(password = '') {
     }
   }
 
-  // Check repeated characters (e.g., "aaaa" or "1111")
   if (/(.)\1{3,}/.test(password)) {
     issues.push('Contains 4 or more repeated consecutive characters')
   }
 
-  // Check sequential sequences (e.g. 1234, abcd)
   const sequences = ['0123456789', 'abcdefghijklmnopqrstuvwxyz', 'qwertyuiop']
   for (const seq of sequences) {
     for (let i = 0; i <= seq.length - 4; i++) {
@@ -88,12 +73,7 @@ export function detectPatterns(password = '') {
   return issues
 }
 
-/**
- * Estimates brute-force crack effort in plain human terms.
- * Rough estimate based on a high-end offline GPU cracking cluster (~10^10 guesses/sec).
- * Explicitly presented as an estimate, NOT a guarantee.
- */
-export function estimateCrackEffort(password = '') {
+export function estimateCrackEffort(password: string = ''): string {
   if (!password || password.length === 0) return 'None'
 
   let poolSize = 0
@@ -104,8 +84,6 @@ export function estimateCrackEffort(password = '') {
 
   if (poolSize === 0) return 'Instantly'
 
-  // Total combinations = poolSize ^ length
-  // In logarithmic entropy bits:
   const entropyBits = password.length * Math.log2(poolSize)
 
   if (entropyBits < 28) return 'Instantly'
@@ -118,10 +96,7 @@ export function estimateCrackEffort(password = '') {
   return 'Centuries'
 }
 
-/**
- * Evaluates password strength score (0 to 4), label, color token, and suggestions.
- */
-export function evaluatePasswordStrength(password = '') {
+export function evaluatePasswordStrength(password: string = ''): PasswordAnalysis {
   if (!password) {
     return {
       score: 0,
@@ -145,12 +120,10 @@ export function evaluatePasswordStrength(password = '') {
   if (metCount >= 4) baseScore += 1
   if (metCount === 5 && password.length >= 10) baseScore += 1
 
-  // Penalty for predictable patterns
   if (issues.length > 0) {
     baseScore = Math.max(0, baseScore - 1)
   }
 
-  // Constrain between 0 and 4
   const finalScore = Math.min(4, Math.max(0, baseScore))
 
   const tierMap = [
@@ -163,7 +136,6 @@ export function evaluatePasswordStrength(password = '') {
 
   const tier = tierMap[finalScore]
 
-  // Actionable suggestion
   let suggestion = 'Password looks great!'
   if (!requirements.find((r) => r.id === 'length')?.met) {
     suggestion = 'Make your password at least 8 characters long.'

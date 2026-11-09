@@ -13,12 +13,9 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
-
-            {/* Protected Routes */}
             <Route
               path="/dashboard"
               element={
@@ -27,8 +24,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
-            {/* Default Fallback */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </AuthProvider>
@@ -38,3 +33,4 @@ function App() {
 }
 
 export default App
+

@@ -1,7 +1,12 @@
 import { Sun, Moon } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 
-export function ThemeToggle({ className = '', floating = false }) {
+export interface ThemeToggleProps {
+  className?: string
+  floating?: boolean
+}
+
+export function ThemeToggle({ className = '', floating = false }: ThemeToggleProps) {
   const { isDark, toggleTheme } = useTheme()
 
   const classes = [

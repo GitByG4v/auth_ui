@@ -1,15 +1,20 @@
 import { useEffect, useRef } from 'react'
 import { useTheme } from '../context/ThemeContext'
 
-/**
- * MatrixBackground
- *
- * Full-screen static binary matrix grid (0s and 1s) with silky-smooth 3D flip animations.
- * Theme-aware: dynamically transitions between light warm white (#FFFEFC) and dark obsidian (#0B0F17).
- */
+interface MatrixCell {
+  char: string
+  prevChar: string
+  targetChar: string
+  isFlipping: boolean
+  flipProgress: number
+  baseOpacity: number
+  glow: number
+  wasHovered: boolean
+}
+
 export function MatrixBackground() {
-  const canvasRef = useRef(null)
-  const animFrameRef = useRef(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const animFrameRef = useRef<number | null>(null)
   const { isDark } = useTheme()
 
   useEffect(() => {
@@ -23,12 +28,11 @@ export function MatrixBackground() {
     let height = 0
     let cols = 0
     let rows = 0
-    let grid = []
+    let grid: MatrixCell[][] = []
 
     const cellWidth = 34
     const cellHeight = 34
 
-    // Track mouse position
     const mouse = {
       x: -2000,
       y: -2000,
@@ -53,7 +57,7 @@ export function MatrixBackground() {
       grid = []
 
       for (let r = 0; r < rows; r++) {
-        const rowCells = []
+        const rowCells: MatrixCell[] = []
         for (let c = 0; c < cols; c++) {
           const initialChar = Math.random() > 0.5 ? '1' : '0'
           rowCells.push({
@@ -78,7 +82,7 @@ export function MatrixBackground() {
     }
     window.addEventListener('resize', handleResize)
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       mouse.x = e.clientX
       mouse.y = e.clientY
       mouse.active = true
@@ -95,13 +99,12 @@ export function MatrixBackground() {
 
     let lastTime = performance.now()
 
-    const render = (time) => {
+    const render = (time: number) => {
       animFrameRef.current = requestAnimationFrame(render)
 
       const delta = Math.min((time - lastTime) / 1000, 0.1)
       lastTime = time
 
-      // Fill canvas background according to active theme (warm obsidian vs warm white)
       ctx.fillStyle = isDark ? '#131110' : '#FFFEFC'
       ctx.fillRect(0, 0, width, height)
 
@@ -116,12 +119,10 @@ export function MatrixBackground() {
           const x = c * cellWidth + cellWidth / 2
           const cell = grid[r][c]
 
-          // Distance from cursor
           const dx = x - mouse.x
           const dy = y - mouse.y
           const dist = Math.sqrt(dx * dx + dy * dy)
 
-          // Check if cursor triggered a flip on this cell
           if (mouse.active && dist < cellWidth * 0.85) {
             if (!cell.wasHovered && !cell.isFlipping) {
               cell.isFlipping = true
@@ -135,13 +136,11 @@ export function MatrixBackground() {
             cell.wasHovered = false
           }
 
-          // Proximity ambient glow
           if (mouse.active && dist < mouse.radius) {
             const proximity = 1 - dist / mouse.radius
             cell.glow = Math.max(cell.glow, proximity * 0.75)
           }
 
-          // Advance 3D flip animation progress
           if (cell.isFlipping) {
             cell.flipProgress += delta * 4.0
 
@@ -152,12 +151,10 @@ export function MatrixBackground() {
             }
           }
 
-          // Smoothly decay glow back to ambient
           if (cell.glow > 0) {
             cell.glow = Math.max(0, cell.glow - delta * 2.2)
           }
 
-          // Determine current character and vertical scale for 3D flip effect
           let scaleY = 1
           let displayChar = cell.char
 
@@ -212,3 +209,4 @@ export function MatrixBackground() {
     />
   )
 }
+

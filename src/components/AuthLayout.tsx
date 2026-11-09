@@ -1,6 +1,15 @@
+import { ReactNode, ComponentType } from 'react'
 import { Lock } from 'lucide-react'
 import { MatrixBackground } from './MatrixBackground'
 import { ThemeToggle } from './ThemeToggle'
+
+export interface AuthLayoutProps {
+  icon?: ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
+  title?: string
+  subtitle?: string
+  children: ReactNode
+  footer?: ReactNode
+}
 
 export function AuthLayout({
   icon: Icon = Lock,
@@ -8,16 +17,12 @@ export function AuthLayout({
   subtitle,
   children,
   footer,
-}) {
+}: AuthLayoutProps) {
   return (
     <>
-      {/* Full Viewport Interactive Binary Matrix Background */}
       <MatrixBackground />
-
-      {/* Floating Theme Toggle (Top Right) */}
       <ThemeToggle floating />
 
-      {/* Main Frosted Glassmorphism Viewport Wrapper */}
       <main className="auth-wrapper">
         <div className="auth-card">
           <header className="auth-header">
@@ -37,3 +42,4 @@ export function AuthLayout({
     </>
   )
 }
+

@@ -1,8 +1,5 @@
 import { z } from 'zod'
 
-/**
- * Validation schema for the Login form.
- */
 export const loginSchema = z.object({
   email: z
     .string()
@@ -11,17 +8,11 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(1, 'Password is required'),
-  rememberMe: z
-    .boolean()
-    .optional()
-    .default(false),
+  rememberMe: z.boolean(),
 })
 
-/**
- * Validation schema for the Register form.
- * Enforces strong baseline security (min 8 chars, uppercase, lowercase, number, symbol)
- * and confirms that password and confirmPassword match.
- */
+export type LoginFormData = z.infer<typeof loginSchema>
+
 export const registerSchema = z
   .object({
     name: z
@@ -48,9 +39,8 @@ export const registerSchema = z
     path: ['confirmPassword'],
   })
 
-/**
- * Validation schema for simulated Password Reset.
- */
+export type RegisterFormData = z.infer<typeof registerSchema>
+
 export const forgotPasswordSchema = z.object({
   email: z
     .string()
@@ -58,3 +48,4 @@ export const forgotPasswordSchema = z.object({
     .email('Please enter a valid email address'),
 })
 
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>

@@ -1,6 +1,15 @@
-import { forwardRef, useId } from 'react'
+import { forwardRef, useId, InputHTMLAttributes, ReactNode, ComponentType } from 'react'
 
-export const FormInput = forwardRef(function FormInput(
+export interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string
+  labelIcon?: ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
+  leftIcon?: ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
+  error?: string
+  hint?: string
+  rightElement?: ReactNode
+}
+
+export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(function FormInput(
   {
     label,
     labelIcon: LabelIcon,
@@ -83,3 +92,4 @@ export const FormInput = forwardRef(function FormInput(
     </div>
   )
 })
+

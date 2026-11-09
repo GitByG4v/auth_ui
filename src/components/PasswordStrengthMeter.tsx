@@ -2,7 +2,11 @@ import { useMemo } from 'react'
 import { evaluatePasswordStrength } from '../utils/passwordStrength'
 import { Check, X, ShieldAlert, Zap } from 'lucide-react'
 
-export function PasswordStrengthMeter({ password = '' }) {
+export interface PasswordStrengthMeterProps {
+  password?: string
+}
+
+export function PasswordStrengthMeter({ password = '' }: PasswordStrengthMeterProps) {
   const analysis = useMemo(() => evaluatePasswordStrength(password), [password])
 
   if (!password) {
@@ -13,18 +17,16 @@ export function PasswordStrengthMeter({ password = '' }) {
 
   return (
     <div className="strength-meter-container" aria-live="polite">
-      {/* Header: Score label & crack effort estimation */}
       <div className="strength-meter-header">
         <span className="strength-label">
           Strength:{' '}
           <strong style={{ color }}>{label}</strong>
         </span>
-        <span className="crack-effort-badge" title="Rough estimate assuming offline GPU cracking cluster">
+        <span className="crack-effort-badge" title="Estimated offline cracking resistance">
           Crack effort: <strong>~{crackEffort}</strong>
         </span>
       </div>
 
-      {/* 4 Segment Progress Bars */}
       <div className="strength-bars" role="progressbar" aria-valuenow={score} aria-valuemin={0} aria-valuemax={4}>
         {[1, 2, 3, 4].map((step) => {
           const isActive = score >= step
@@ -40,7 +42,6 @@ export function PasswordStrengthMeter({ password = '' }) {
         })}
       </div>
 
-      {/* Checklist Grid */}
       <div className="strength-requirements-grid">
         {requirements.map((req) => (
           <div
@@ -57,7 +58,6 @@ export function PasswordStrengthMeter({ password = '' }) {
         ))}
       </div>
 
-      {/* Common Pattern Warning (if any) */}
       {issues.length > 0 && (
         <div className="strength-warning-box">
           <ShieldAlert size={15} style={{ flexShrink: 0 }} />
@@ -65,7 +65,6 @@ export function PasswordStrengthMeter({ password = '' }) {
         </div>
       )}
 
-      {/* Actionable Suggestion */}
       {suggestion && score < 4 && (
         <div className="strength-hint">
           <Zap size={14} style={{ color: 'var(--accent)', flexShrink: 0 }} />

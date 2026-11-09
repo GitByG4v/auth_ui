@@ -1,4 +1,13 @@
+import { ButtonHTMLAttributes, ReactNode } from 'react'
 import { Loader2 } from 'lucide-react'
+
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode
+  variant?: 'primary' | 'secondary' | 'ghost'
+  isFullWidth?: boolean
+  isLoading?: boolean
+  loadingText?: string
+}
 
 export function Button({
   children,
@@ -10,7 +19,7 @@ export function Button({
   disabled = false,
   className = '',
   ...props
-}) {
+}: ButtonProps) {
   const variantClass = `btn-${variant}`
   const fullWidthClass = isFullWidth ? 'btn-full' : ''
   const classes = ['btn', variantClass, fullWidthClass, className].filter(Boolean).join(' ')

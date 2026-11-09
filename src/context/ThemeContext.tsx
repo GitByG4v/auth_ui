@@ -1,17 +1,16 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import type { ThemeContextType } from '../types/auth'
 
-const ThemeContext = createContext(null)
+const ThemeContext = createContext<ThemeContextType | null>(null)
 
 const THEME_STORAGE_KEY = 'auth_app_theme_mode'
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    // 1. Check saved user preference in localStorage
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem(THEME_STORAGE_KEY)
     if (saved === 'dark' || saved === 'light') {
       return saved
     }
-    // 2. Fall back to system preference
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       return 'dark'
     }
@@ -19,7 +18,6 @@ export function ThemeProvider({ children }) {
   })
 
   useEffect(() => {
-    // Apply theme attribute to <html> tag for CSS custom properties
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem(THEME_STORAGE_KEY, theme)
   }, [theme])
@@ -28,7 +26,7 @@ export function ThemeProvider({ children }) {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
   }
 
-  const value = {
+  const value: ThemeContextType = {
     theme,
     isDark: theme === 'dark',
     toggleTheme,
@@ -37,7 +35,7 @@ export function ThemeProvider({ children }) {
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
 
-export function useTheme() {
+export function useTheme(): ThemeContextType {
   const context = useContext(ThemeContext)
   if (!context) {
     throw new Error('useTheme must be used within a <ThemeProvider>')

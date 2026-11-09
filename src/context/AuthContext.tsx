@@ -1,14 +1,14 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import { authService } from '../services/authService'
+import type { User, AuthContextType } from '../types/auth'
 
-const AuthContext = createContext(null)
+const AuthContext = createContext<AuthContextType | null>(null)
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Restore session on initial application load (survives page refresh)
   useEffect(() => {
     let isMounted = true
 
@@ -38,26 +38,26 @@ export function AuthProvider({ children }) {
     setError(null)
   }, [])
 
-  const login = useCallback(async ({ email, password, rememberMe }) => {
+  const login = useCallback(async ({ email, password, rememberMe }: { email: string; password: string; rememberMe?: boolean }) => {
     setError(null)
     try {
       const authenticatedUser = await authService.login({ email, password, rememberMe })
       setUser(authenticatedUser)
       return authenticatedUser
     } catch (err) {
-      const message = err.message || 'Failed to sign in.'
+      const message = err instanceof Error ? err.message : 'Failed to sign in.'
       setError(message)
       throw err
     }
   }, [])
 
-  const register = useCallback(async ({ name, email, password }) => {
+  const register = useCallback(async ({ name, email, password }: { name: string; email: string; password: string }) => {
     setError(null)
     try {
       const newUser = await authService.register({ name, email, password })
       return newUser
     } catch (err) {
-      const message = err.message || 'Registration failed.'
+      const message = err instanceof Error ? err.message : 'Registration failed.'
       setError(message)
       throw err
     }
@@ -72,12 +72,12 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
-  const requestPasswordReset = useCallback(async (email) => {
+  const requestPasswordReset = useCallback(async (email: string) => {
     setError(null)
     return await authService.requestPasswordReset({ email })
   }, [])
 
-  const value = {
+  const value: AuthContextType = {
     user,
     isAuthenticated: Boolean(user),
     isLoading,
@@ -92,10 +92,7 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-/**
- * Custom hook to consume authentication context safely.
- */
-export function useAuth() {
+export function useAuth(): AuthContextType {
   const context = useContext(AuthContext)
   if (!context) {
     throw new Error('useAuth must be used within an <AuthProvider>')
