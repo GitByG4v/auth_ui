@@ -100,3 +100,4 @@ describe('authService (Mock Authentication Layer)', () => {
     expect(response.message).toContain('password reset instructions have been sent')
   })
 })
+
