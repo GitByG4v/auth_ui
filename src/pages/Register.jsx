@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { UserPlus, AlertCircle } from 'lucide-react'
+import { UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormInput } from '../components/FormInput'
 import { PasswordInput } from '../components/PasswordInput'
 import { Button } from '../components/Button'
 import { registerSchema } from '../utils/validation'
+import { useAuth } from '../context/AuthContext'
 
-export function Register({ onNavigate, onSubmitSuccess, serverError }) {
+export function Register({ onNavigate, onSuccess }) {
+  const { register: registerUser, error: contextError, clearError } = useAuth()
   const [localError, setLocalError] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
 
   const {
     register,
@@ -28,21 +31,25 @@ export function Register({ onNavigate, onSubmitSuccess, serverError }) {
 
   const onSubmit = async (data) => {
     setLocalError(null)
+    setSuccessMessage(null)
+    clearError()
     try {
-      if (onSubmitSuccess) {
-        await onSubmitSuccess(data)
-      } else {
-        // Milestone 3 preview behavior
-        await new Promise((resolve) => setTimeout(resolve, 800))
-        alert(`Account registered preview successfully for: ${data.name} (${data.email})`)
-        if (onNavigate) onNavigate('login')
-      }
+      await registerUser({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      })
+      setSuccessMessage('Account registered successfully! You can now sign in.')
+      setTimeout(() => {
+        if (onSuccess) onSuccess()
+        else if (onNavigate) onNavigate('login')
+      }, 1200)
     } catch (err) {
       setLocalError(err.message || 'Registration failed. Please check your information.')
     }
   }
 
-  const errorMessage = serverError || localError
+  const errorMessage = contextError || localError
 
   return (
     <AuthLayout
@@ -70,10 +77,17 @@ export function Register({ onNavigate, onSubmitSuccess, serverError }) {
         </div>
       )}
 
+      {successMessage && (
+        <div className="alert-banner alert-success" role="status">
+          <CheckCircle2 size={18} aria-hidden="true" style={{ flexShrink: 0 }} />
+          <span>{successMessage}</span>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormInput
           label="Full Name"
-          placeholder="Jane Doe"
+          placeholder="Alex Morgan"
           type="text"
           autoComplete="name"
           required
@@ -124,4 +138,3 @@ export function Register({ onNavigate, onSubmitSuccess, serverError }) {
     </AuthLayout>
   )
 }
-

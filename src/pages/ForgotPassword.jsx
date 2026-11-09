@@ -1,0 +1,139 @@
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { KeyRound, ArrowLeft, CheckCircle2, ShieldAlert } from 'lucide-react'
+import { AuthLayout } from '../components/AuthLayout'
+import { FormInput } from '../components/FormInput'
+import { Button } from '../components/Button'
+import { forgotPasswordSchema } from '../utils/validation'
+import { useAuth } from '../context/AuthContext'
+
+export function ForgotPassword({ onNavigate }) {
+  const { requestPasswordReset } = useAuth()
+  const [result, setResult] = useState(null)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: '',
+    },
+    mode: 'onTouched',
+  })
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await requestPasswordReset(data.email)
+      setResult(response)
+    } catch {
+      setResult({
+        success: true,
+        message: `If an account exists for ${data.email}, instructions were dispatched.`,
+      })
+    }
+  }
+
+  return (
+    <AuthLayout
+      icon={KeyRound}
+      title="Reset Password"
+      subtitle="Enter your email to receive recovery instructions"
+      footer={
+        <button
+          type="button"
+          className="auth-link"
+          style={{
+            background: 'none',
+            border: 'none',
+            font: 'inherit',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            cursor: 'pointer',
+          }}
+          onClick={() => onNavigate && onNavigate('login')}
+        >
+          <ArrowLeft size={16} />
+          <span>Back to sign in</span>
+        </button>
+      }
+    >
+      {result ? (
+        <div>
+          <div className="alert-banner alert-success" role="status">
+            <CheckCircle2 size={18} aria-hidden="true" style={{ flexShrink: 0 }} />
+            <span>{result.message}</span>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: 'var(--bg-page)',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--radius-md)',
+              padding: '1rem',
+              marginTop: '1.25rem',
+              fontSize: '0.8125rem',
+              color: 'var(--text-muted)',
+              lineHeight: 1.5,
+              textAlign: 'left',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                color: 'var(--text-main)',
+                fontWeight: 600,
+                marginBottom: '0.35rem',
+              }}
+            >
+              <ShieldAlert size={16} color="var(--warning)" />
+              <span>Security Architecture Note</span>
+            </div>
+            {result.disclaimer ||
+              'Simulated reset: in a real production system, the backend issues a signed, cryptographically random, time-limited token (e.g. HMAC or JWT stored in Redis) sent via secure email (SMTP/SES) with rate limiting.'}
+          </div>
+
+          <div style={{ marginTop: '1.5rem' }}>
+            <Button
+              type="button"
+              variant="secondary"
+              isFullWidth
+              onClick={() => onNavigate && onNavigate('login')}
+            >
+              Return to Sign In
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          <FormInput
+            label="Email Address"
+            placeholder="name@example.com"
+            type="email"
+            autoComplete="email"
+            required
+            error={errors.email?.message}
+            {...register('email')}
+          />
+
+          <div style={{ marginTop: '1.75rem' }}>
+            <Button
+              type="submit"
+              variant="primary"
+              isFullWidth
+              isLoading={isSubmitting}
+              loadingText="Sending reset link..."
+            >
+              Send Reset Link
+            </Button>
+          </div>
+        </form>
+      )}
+    </AuthLayout>
+  )
+}

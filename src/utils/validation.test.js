@@ -25,7 +25,7 @@ describe('Validation Schemas (Zod)', () => {
   describe('registerSchema', () => {
     it('fails when passwords do not match', () => {
       const result = registerSchema.safeParse({
-        name: 'Jane Doe',
+        name: 'Alex Morgan',
         email: 'jane@example.com',
         password: 'ValidPassword123!',
         confirmPassword: 'MismatchPassword123!',
@@ -40,7 +40,7 @@ describe('Validation Schemas (Zod)', () => {
     it('fails when password does not meet security rules', () => {
       // Missing uppercase, number, symbol
       const result = registerSchema.safeParse({
-        name: 'Jane Doe',
+        name: 'Alex Morgan',
         email: 'jane@example.com',
         password: 'lowercaseonly',
         confirmPassword: 'lowercaseonly',
@@ -50,7 +50,7 @@ describe('Validation Schemas (Zod)', () => {
 
     it('passes for complete, valid registration credentials', () => {
       const result = registerSchema.safeParse({
-        name: 'Jane Doe',
+        name: 'Alex Morgan',
         email: 'jane@example.com',
         password: 'StrongP@ssw0rd!',
         confirmPassword: 'StrongP@ssw0rd!',

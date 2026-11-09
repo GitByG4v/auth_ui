@@ -7,8 +7,10 @@ import { FormInput } from '../components/FormInput'
 import { PasswordInput } from '../components/PasswordInput'
 import { Button } from '../components/Button'
 import { loginSchema } from '../utils/validation'
+import { useAuth } from '../context/AuthContext'
 
-export function Login({ onNavigate, onSubmitSuccess, serverError }) {
+export function Login({ onNavigate, onSuccess }) {
+  const { login, error: contextError, clearError } = useAuth()
   const [localError, setLocalError] = useState(null)
 
   const {
@@ -22,25 +24,21 @@ export function Login({ onNavigate, onSubmitSuccess, serverError }) {
       password: '',
       rememberMe: false,
     },
-    mode: 'onTouched', // Validates on blur/interaction
+    mode: 'onTouched',
   })
 
   const onSubmit = async (data) => {
     setLocalError(null)
+    clearError()
     try {
-      if (onSubmitSuccess) {
-        await onSubmitSuccess(data)
-      } else {
-        // Milestone 3 preview behavior
-        await new Promise((resolve) => setTimeout(resolve, 800))
-        alert(`Logged in preview successfully for: ${data.email}\nRemember Me: ${data.rememberMe}`)
-      }
+      await login(data)
+      if (onSuccess) onSuccess()
     } catch (err) {
       setLocalError(err.message || 'Failed to sign in. Please verify your credentials.')
     }
   }
 
-  const errorMessage = serverError || localError
+  const errorMessage = contextError || localError
 
   return (
     <AuthLayout
@@ -121,4 +119,3 @@ export function Login({ onNavigate, onSubmitSuccess, serverError }) {
     </AuthLayout>
   )
 }
-
