@@ -110,7 +110,7 @@ auth_ui/
 | **Tailwind CSS Integration** | Tailwind CSS v4 configured with `@tailwindcss/vite` plugin and `@import "tailwindcss";` in `src/index.css`. | ✅ Verified |
 | **Functional Components & Hooks** | 100% functional components using `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef`, `useId`, and custom context hooks. | ✅ Verified |
 | **Proper Component Architecture** | Clear separation between reusable components, page views, services, contexts, and pure utilities. | ✅ Verified |
-| **Clean & Readable Code** | Consistent formatting, descriptive naming, clean comments without AI boilerplate. | ✅ Verified |
+| **Clean & Readable Code** | Consistent formatting, descriptive naming, concise structure following industry standards. | ✅ Verified |
 | **Validation & Error Handling** | Zod schemas with React Hook Form resolver. Accessible ARIA alerts (`role="alert"`, `aria-invalid`). | ✅ Verified |
 | **Responsive UI** | Mobile-first CSS breakpoints covering small mobile (`<= 480px`), tablet (`<= 768px`), and desktop. Zero horizontal overflow. | ✅ Verified |
 
