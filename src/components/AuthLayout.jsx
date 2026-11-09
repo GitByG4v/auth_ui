@@ -1,5 +1,6 @@
 import { Lock } from 'lucide-react'
 import { MatrixBackground } from './MatrixBackground'
+import { ThemeToggle } from './ThemeToggle'
 
 export function AuthLayout({
   icon: Icon = Lock,
@@ -12,6 +13,9 @@ export function AuthLayout({
     <>
       {/* Full Viewport Interactive Binary Matrix Background */}
       <MatrixBackground />
+
+      {/* Floating Theme Toggle (Top Right) */}
+      <ThemeToggle floating />
 
       {/* Main Frosted Glassmorphism Viewport Wrapper */}
       <main className="auth-wrapper">

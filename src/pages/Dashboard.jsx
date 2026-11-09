@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Button } from '../components/Button'
-import { ShieldCheck, LogOut, User, CheckCircle2, Mail, Hash } from 'lucide-react'
+import { ThemeToggle } from '../components/ThemeToggle'
+import { MatrixBackground } from '../components/MatrixBackground'
+import { ShieldCheck, LogOut, User, CheckCircle2, Mail, Hash, KeyRound } from 'lucide-react'
 
 export function Dashboard() {
   const { user, logout } = useAuth()
@@ -20,28 +22,22 @@ export function Dashboard() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)' }}>
+    <div className="dashboard-page">
+      {/* Full Viewport Interactive Binary Matrix Background */}
+      <MatrixBackground />
+      <div className="matrix-glow-overlay" />
+
       {/* Top Navigation Bar */}
       <header className="navbar">
         <div className="navbar-brand">
-          <div
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: 'var(--radius-sm)',
-              backgroundColor: 'var(--accent-subtle)',
-              color: 'var(--accent)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div className="navbar-logo-badge">
             <ShieldCheck size={20} />
           </div>
           <span>Auth System</span>
         </div>
 
         <div className="navbar-user">
+          <ThemeToggle />
           <div className="navbar-user-info">
             <div className="navbar-user-name">{user?.name}</div>
             <div className="navbar-user-email">{user?.email}</div>
@@ -70,19 +66,8 @@ export function Dashboard() {
               You are signed in to your secure account dashboard.
             </p>
           </div>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.45rem',
-              backgroundColor: 'var(--success-bg)',
-              color: 'var(--success)',
-              padding: '0.45rem 0.9rem',
-              borderRadius: 'var(--radius-full)',
-              fontSize: '0.8125rem',
-              fontWeight: 600,
-            }}
-          >
+          <div className="dashboard-status-badge">
+            <span className="pulse-dot" aria-hidden="true" />
             <CheckCircle2 size={16} />
             <span>Active Session</span>
           </div>
@@ -91,30 +76,39 @@ export function Dashboard() {
         {/* Profile Information Card */}
         <section className="dashboard-card">
           <div className="dashboard-card-header">
-            <User size={18} color="var(--accent)" />
+            <div className="dashboard-card-icon-wrap">
+              <User size={18} />
+            </div>
             <span>Account Details</span>
           </div>
           <ul className="profile-list">
             <li className="profile-item">
-              <span className="profile-item-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <User size={14} color="var(--text-subtle)" />
+              <span className="profile-item-label">
+                <User size={15} color="var(--accent)" />
                 <span>Full Name</span>
               </span>
               <span className="profile-item-value">{user?.name}</span>
             </li>
             <li className="profile-item">
-              <span className="profile-item-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Mail size={14} color="var(--text-subtle)" />
+              <span className="profile-item-label">
+                <Mail size={15} color="var(--accent)" />
                 <span>Email Address</span>
               </span>
               <span className="profile-item-value">{user?.email}</span>
             </li>
             <li className="profile-item">
-              <span className="profile-item-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Hash size={14} color="var(--text-subtle)" />
+              <span className="profile-item-label">
+                <Hash size={15} color="var(--accent)" />
                 <span>Account ID</span>
               </span>
               <span className="profile-item-value">{user?.id}</span>
+            </li>
+            <li className="profile-item">
+              <span className="profile-item-label">
+                <KeyRound size={15} color="var(--accent)" />
+                <span>Security Protocol</span>
+              </span>
+              <span className="profile-item-value">Web Crypto SHA-256</span>
             </li>
           </ul>
         </section>

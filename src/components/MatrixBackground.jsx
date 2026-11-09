@@ -1,8 +1,16 @@
 import { useEffect, useRef } from 'react'
+import { useTheme } from '../context/ThemeContext'
 
+/**
+ * MatrixBackground
+ *
+ * Full-screen static binary matrix grid (0s and 1s) with silky-smooth 3D flip animations.
+ * Theme-aware: dynamically transitions between light warm white (#FFFEFC) and dark obsidian (#0B0F17).
+ */
 export function MatrixBackground() {
   const canvasRef = useRef(null)
   const animFrameRef = useRef(null)
+  const { isDark } = useTheme()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -24,7 +32,7 @@ export function MatrixBackground() {
     const mouse = {
       x: -2000,
       y: -2000,
-      radius: 95, // Proximity glow halo radius
+      radius: 95,
       active: false,
     }
 
@@ -53,8 +61,8 @@ export function MatrixBackground() {
             prevChar: initialChar,
             targetChar: initialChar,
             isFlipping: false,
-            flipProgress: 1, // 0 to 1 flip progress
-            baseOpacity: 0.16 + Math.random() * 0.12,
+            flipProgress: 1,
+            baseOpacity: isDark ? 0.24 + Math.random() * 0.16 : 0.16 + Math.random() * 0.12,
             glow: 0,
             wasHovered: false,
           })
@@ -93,8 +101,8 @@ export function MatrixBackground() {
       const delta = Math.min((time - lastTime) / 1000, 0.1)
       lastTime = time
 
-      // Crisp warm white background
-      ctx.fillStyle = '#FFFEFC'
+      // Fill canvas background according to active theme (warm obsidian vs warm white)
+      ctx.fillStyle = isDark ? '#131110' : '#FFFEFC'
       ctx.fillRect(0, 0, width, height)
 
       ctx.font = '600 18px "Courier New", Consolas, monospace'
@@ -116,7 +124,6 @@ export function MatrixBackground() {
           // Check if cursor triggered a flip on this cell
           if (mouse.active && dist < cellWidth * 0.85) {
             if (!cell.wasHovered && !cell.isFlipping) {
-              // Initiate smooth 3D flip animation
               cell.isFlipping = true
               cell.flipProgress = 0
               cell.prevChar = cell.char
@@ -136,7 +143,6 @@ export function MatrixBackground() {
 
           // Advance 3D flip animation progress
           if (cell.isFlipping) {
-            // Smooth flip duration ~250ms (speed = 4.0)
             cell.flipProgress += delta * 4.0
 
             if (cell.flipProgress >= 1.0) {
@@ -156,7 +162,6 @@ export function MatrixBackground() {
           let displayChar = cell.char
 
           if (cell.isFlipping) {
-            // Cosine curve: 1 -> 0 -> 1 creates an authentic 3D card roll
             scaleY = Math.abs(Math.cos(cell.flipProgress * Math.PI))
             displayChar = cell.flipProgress < 0.5 ? cell.prevChar : cell.targetChar
           }
@@ -164,23 +169,20 @@ export function MatrixBackground() {
           ctx.save()
           ctx.translate(x, y)
 
-          // Apply vertical 3D perspective squashing during flip
           if (scaleY < 0.99) {
             ctx.scale(1, Math.max(0.04, scaleY))
           }
 
           if (cell.glow > 0.05 || cell.isFlipping) {
-            // Vibrant glowing state
             const glowFactor = Math.max(cell.glow, cell.isFlipping ? 0.7 : 0)
-            ctx.shadowColor = '#FF5412'
-            ctx.shadowBlur = 16 * glowFactor
-            ctx.fillStyle = '#D97757'
+            ctx.shadowColor = isDark ? '#FF8A65' : '#FF5412'
+            ctx.shadowBlur = (isDark ? 22 : 16) * glowFactor
+            ctx.fillStyle = isDark ? '#FFAB91' : '#D97757'
             ctx.font = '700 19px "Courier New", Consolas, monospace'
-            ctx.globalAlpha = Math.min(1.0, 0.5 + glowFactor * 0.5)
+            ctx.globalAlpha = Math.min(1.0, 0.65 + glowFactor * 0.35)
           } else {
-            // Ambient default state
             ctx.shadowBlur = 0
-            ctx.fillStyle = '#D97757'
+            ctx.fillStyle = isDark ? '#E07A5F' : '#D97757'
             ctx.globalAlpha = cell.baseOpacity
           }
 
@@ -200,7 +202,7 @@ export function MatrixBackground() {
       window.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseleave', handleMouseLeave)
     }
-  }, [])
+  }, [isDark])
 
   return (
     <canvas
