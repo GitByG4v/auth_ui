@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { KeyRound, ArrowLeft, CheckCircle2, ShieldAlert } from 'lucide-react'
+import { KeyRound, Mail, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormInput } from '../components/FormInput'
 import { Button } from '../components/Button'
@@ -49,7 +49,7 @@ export function ForgotPassword() {
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '0.35rem',
+            gap: '0.4rem',
           }}
         >
           <ArrowLeft size={16} />
@@ -64,39 +64,9 @@ export function ForgotPassword() {
             <span>{result.message}</span>
           </div>
 
-          <div
-            style={{
-              backgroundColor: 'var(--bg-page)',
-              border: '1px solid var(--border-color)',
-              borderRadius: 'var(--radius-md)',
-              padding: '1rem',
-              marginTop: '1.25rem',
-              fontSize: '0.8125rem',
-              color: 'var(--text-muted)',
-              lineHeight: 1.5,
-              textAlign: 'left',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                color: 'var(--text-main)',
-                fontWeight: 600,
-                marginBottom: '0.35rem',
-              }}
-            >
-              <ShieldAlert size={16} color="var(--warning)" />
-              <span>Security Architecture Note</span>
-            </div>
-            {result.disclaimer ||
-              'Simulated reset: in a real production system, the backend issues a signed, cryptographically random, time-limited token (e.g. HMAC or JWT stored in Redis) sent via secure email (SMTP/SES) with rate limiting.'}
-          </div>
-
           <div style={{ marginTop: '1.5rem' }}>
             <Link to="/login" style={{ textDecoration: 'none' }}>
-              <Button type="button" variant="secondary" isFullWidth>
+              <Button type="button" variant="primary" isFullWidth>
                 Return to Sign In
               </Button>
             </Link>
@@ -106,6 +76,8 @@ export function ForgotPassword() {
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <FormInput
             label="Email Address"
+            labelIcon={Mail}
+            leftIcon={Mail}
             placeholder="name@example.com"
             type="email"
             autoComplete="email"
@@ -122,7 +94,8 @@ export function ForgotPassword() {
               isLoading={isSubmitting}
               loadingText="Sending reset link..."
             >
-              Send Reset Link
+              <span>Send Reset Link</span>
+              <ArrowRight size={18} aria-hidden="true" />
             </Button>
           </div>
         </form>

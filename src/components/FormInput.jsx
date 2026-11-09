@@ -3,6 +3,8 @@ import { forwardRef, useId } from 'react'
 export const FormInput = forwardRef(function FormInput(
   {
     label,
+    labelIcon: LabelIcon,
+    leftIcon: LeftIcon,
     error,
     hint,
     id,
@@ -23,6 +25,11 @@ export const FormInput = forwardRef(function FormInput(
     <div className="form-group">
       {label && (
         <label htmlFor={inputId} className="form-label">
+          {LabelIcon && (
+            <span className="form-label-icon" aria-hidden="true">
+              <LabelIcon size={14} strokeWidth={2.2} />
+            </span>
+          )}
           <span>
             {label} {required && <span aria-hidden="true" style={{ color: 'var(--danger)' }}>*</span>}
           </span>
@@ -30,6 +37,12 @@ export const FormInput = forwardRef(function FormInput(
       )}
 
       <div className="form-input-container">
+        {LeftIcon && (
+          <div className="form-input-left" aria-hidden="true">
+            <LeftIcon size={18} strokeWidth={1.8} />
+          </div>
+        )}
+
         <input
           ref={ref}
           id={inputId}
@@ -39,8 +52,9 @@ export const FormInput = forwardRef(function FormInput(
           required={required}
           className={[
             'form-input',
-            error ? 'is-error' : '',
+            LeftIcon ? 'has-left-icon' : '',
             rightElement ? 'has-right-element' : '',
+            error ? 'is-error' : '',
             className,
           ]
             .filter(Boolean)
@@ -69,4 +83,3 @@ export const FormInput = forwardRef(function FormInput(
     </div>
   )
 })
-

@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { UserPlus, AlertCircle } from 'lucide-react'
+import { UserPlus, User, Mail, Lock, Sparkles, ArrowRight, AlertCircle } from 'lucide-react'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormInput } from '../components/FormInput'
 import { PasswordInput } from '../components/PasswordInput'
+import { PasswordStrengthMeter } from '../components/PasswordStrengthMeter'
+import { PasswordGenerator } from '../components/PasswordGenerator'
 import { Button } from '../components/Button'
 import { registerSchema } from '../utils/validation'
 import { useAuth } from '../context/AuthContext'
@@ -13,6 +15,7 @@ import { useAuth } from '../context/AuthContext'
 export function Register() {
   const { register: registerUser, isAuthenticated, error: contextError, clearError } = useAuth()
   const [localError, setLocalError] = useState(null)
+  const [showGenerator, setShowGenerator] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -24,6 +27,8 @@ export function Register() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
@@ -35,6 +40,22 @@ export function Register() {
     },
     mode: 'onTouched',
   })
+
+  const watchedPassword = watch('password') || ''
+
+  const handleApplyGeneratedPassword = (generated) => {
+    setValue('password', generated, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    })
+    setValue('confirmPassword', generated, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    })
+    setShowGenerator(false)
+  }
 
   const onSubmit = async (data) => {
     setLocalError(null)
@@ -48,7 +69,7 @@ export function Register() {
       navigate('/login', {
         state: {
           registeredEmail: data.email,
-          message: 'Account created successfully! Please sign in with your password.',
+          message: 'Account created successfully! Please sign in with your credentials.',
         },
       })
     } catch (err) {
@@ -62,7 +83,7 @@ export function Register() {
     <AuthLayout
       icon={UserPlus}
       title="Create Account"
-      subtitle="Sign up to start your secure session"
+      subtitle="Sign up to get started with your secure account"
       footer={
         <p>
           Already have an account?{' '}
@@ -82,6 +103,8 @@ export function Register() {
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormInput
           label="Full Name"
+          labelIcon={User}
+          leftIcon={User}
           placeholder="Alex Morgan"
           type="text"
           autoComplete="name"
@@ -92,6 +115,8 @@ export function Register() {
 
         <FormInput
           label="Email Address"
+          labelIcon={Mail}
+          leftIcon={Mail}
           placeholder="name@example.com"
           type="email"
           autoComplete="email"
@@ -102,6 +127,8 @@ export function Register() {
 
         <PasswordInput
           label="Password"
+          labelIcon={Lock}
+          leftIcon={Lock}
           placeholder="At least 8 characters"
           autoComplete="new-password"
           required
@@ -109,8 +136,46 @@ export function Register() {
           {...register('password')}
         />
 
+        {/* Live Password Strength Meter */}
+        <PasswordStrengthMeter password={watchedPassword} />
+
+        {/* Toggle Password Generator */}
+        <div style={{ margin: '0.35rem 0 1rem 0', textAlign: 'left' }}>
+          <button
+            type="button"
+            className="auth-link"
+            style={{
+              background: 'none',
+              border: 'none',
+              font: 'inherit',
+              fontSize: '0.8125rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+            onClick={() => setShowGenerator((prev) => !prev)}
+          >
+            <Sparkles size={14} />
+            <span>
+              {showGenerator ? 'Hide password generator' : 'Need a strong password? Generate one'}
+            </span>
+          </button>
+        </div>
+
+        {/* Embedded Secure Generator Panel */}
+        {showGenerator && (
+          <PasswordGenerator
+            onSelectPassword={handleApplyGeneratedPassword}
+            onClose={() => setShowGenerator(false)}
+          />
+        )}
+
         <PasswordInput
           label="Confirm Password"
+          labelIcon={Lock}
+          leftIcon={Lock}
           placeholder="Repeat your password"
           autoComplete="new-password"
           required
@@ -126,7 +191,8 @@ export function Register() {
             isLoading={isSubmitting}
             loadingText="Creating account..."
           >
-            Create Account
+            <span>Create Account</span>
+            <ArrowRight size={18} aria-hidden="true" />
           </Button>
         </div>
       </form>

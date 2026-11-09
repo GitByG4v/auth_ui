@@ -17,7 +17,6 @@ An interview-grade, frontend-only authentication application built with React, V
 - **Form & Validation**: React Hook Form + Zod (`@hookform/resolvers`)
 - **Icons**: Lucide React
 - **Styling**: Plain modern CSS (Custom Properties / Design Tokens)
-- **Unit Testing**: Vitest
 
 ## Getting Started
 
@@ -27,9 +26,6 @@ npm install
 
 # Start development server
 npm run dev
-
-# Run unit tests
-npm test
 
 # Build for production
 npm run build

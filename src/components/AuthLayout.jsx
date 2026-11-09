@@ -1,34 +1,35 @@
-import { ShieldCheck } from 'lucide-react'
+import { Lock } from 'lucide-react'
+import { MatrixBackground } from './MatrixBackground'
 
 export function AuthLayout({
-  icon: Icon = ShieldCheck,
+  icon: Icon = Lock,
   title,
   subtitle,
   children,
   footer,
 }) {
   return (
-    <main className="auth-wrapper">
-      <div className="auth-card">
-        <header className="auth-header">
-          <div className="auth-icon-badge" aria-hidden="true">
-            <Icon size={26} />
-          </div>
-          {title && <h1 className="auth-title">{title}</h1>}
-          {subtitle && <p className="auth-subtitle">{subtitle}</p>}
-        </header>
+    <>
+      {/* Full Viewport Interactive Binary Matrix Background */}
+      <MatrixBackground />
 
-        <div className="auth-body">
-          {children}
+      {/* Main Frosted Glassmorphism Viewport Wrapper */}
+      <main className="auth-wrapper">
+        <div className="auth-card">
+          <header className="auth-header">
+            <div className="auth-icon-badge" aria-hidden="true">
+              <Icon size={28} strokeWidth={2.2} />
+            </div>
+            {title && <h1 className="auth-title">{title}</h1>}
+            {subtitle && <p className="auth-subtitle">{subtitle}</p>}
+            <div className="auth-header-divider" aria-hidden="true" />
+          </header>
+
+          <div className="auth-body">{children}</div>
+
+          {footer && <footer className="auth-footer">{footer}</footer>}
         </div>
-
-        {footer && (
-          <footer className="auth-footer">
-            {footer}
-          </footer>
-        )}
-      </div>
-    </main>
+      </main>
+    </>
   )
 }
-

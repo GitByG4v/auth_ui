@@ -1,9 +1,14 @@
 import { useState, forwardRef } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Lock } from 'lucide-react'
 import { FormInput } from './FormInput'
 
 export const PasswordInput = forwardRef(function PasswordInput(
-  { label = 'Password', ...props },
+  {
+    label = 'Password',
+    labelIcon = Lock,
+    leftIcon = Lock,
+    ...props
+  },
   ref
 ) {
   const [showPassword, setShowPassword] = useState(false)
@@ -12,6 +17,8 @@ export const PasswordInput = forwardRef(function PasswordInput(
     <FormInput
       ref={ref}
       label={label}
+      labelIcon={labelIcon}
+      leftIcon={leftIcon}
       type={showPassword ? 'text' : 'password'}
       rightElement={
         <button
@@ -28,4 +35,3 @@ export const PasswordInput = forwardRef(function PasswordInput(
     />
   )
 })
-

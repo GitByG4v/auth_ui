@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Lock, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Lock, Mail, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormInput } from '../components/FormInput'
 import { PasswordInput } from '../components/PasswordInput'
@@ -16,11 +16,9 @@ export function Login() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Where to navigate after login: return to the attempted URL, or fallback to /dashboard
   const from = location.state?.from?.pathname || '/dashboard'
   const flashMessage = location.state?.message
 
-  // If already logged in, redirect away from login page
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard', { replace: true })
@@ -48,7 +46,7 @@ export function Login() {
       await login(data)
       navigate(from, { replace: true })
     } catch (err) {
-      setLocalError(err.message || 'Failed to sign in. Please verify your credentials.')
+      setLocalError(err.message || 'Invalid email or password.')
     }
   }
 
@@ -85,6 +83,8 @@ export function Login() {
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormInput
           label="Email Address"
+          labelIcon={Mail}
+          leftIcon={Mail}
           placeholder="name@example.com"
           type="email"
           autoComplete="email"
@@ -95,6 +95,8 @@ export function Login() {
 
         <PasswordInput
           label="Password"
+          labelIcon={Lock}
+          leftIcon={Lock}
           placeholder="••••••••"
           autoComplete="current-password"
           required
@@ -128,7 +130,8 @@ export function Login() {
           isLoading={isSubmitting}
           loadingText="Signing in..."
         >
-          Sign In
+          <span>Sign In</span>
+          <ArrowRight size={18} aria-hidden="true" />
         </Button>
       </form>
     </AuthLayout>
