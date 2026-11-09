@@ -121,3 +121,4 @@ export function Login({ onNavigate, onSubmitSuccess, serverError }) {
     </AuthLayout>
   )
 }
+

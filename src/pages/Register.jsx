@@ -124,3 +124,4 @@ export function Register({ onNavigate, onSubmitSuccess, serverError }) {
     </AuthLayout>
   )
 }
+
